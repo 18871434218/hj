@@ -2,8 +2,22 @@
   <div class="Login">
     <div style="text-align:center;font-size:24px; padding-top:40px"><h1>{{ msg }}</h1></div>
     <div style="text-align:center;font-size:20px"><h1>{{ msg1 }}</h1></div>
-  
-    <button>你是</button>
+    <div>
+      请输入用户名：
+      <el-input
+        placeholder="请输入用户名"
+        v-model="input21">
+      </el-input>
+    </div>
+    <div>
+      请输入邀请码：
+      <el-input
+        placeholder="请输入邀请码"
+        v-model="input23">
+      </el-input>
+    </div>
+
+    <el-button type="primary">接入车联网</el-button>
   </div>
 </template>
 
