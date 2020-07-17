@@ -67,7 +67,7 @@ export default {
 
       message:{
         "baseState":[1.000000,40.800000,0.4],
-        "vehicleInfo":[1.000000,"002",0.000000,120.199000,30.281000,40.000000,20.000000,0.500000],
+        "vehicleInfo":[0.000000,"002",0.000000,120.199000,30.281000,40.000000,20.000000,0.500000],
         "errorInfo":[1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000]
       },
      /*  topic: "testProject/clientSub/baseState",                 //发布主题
@@ -106,7 +106,7 @@ export default {
             this.message.vehicleInfo[3] = this.message.vehicleInfo[3] + Math.random() ;   
             this.message.vehicleInfo[4] = this.message.vehicleInfo[4] + Math.random(); 
             this.message.vehicleInfo[5] =   */
-            var r = 40;
+            var r = 10;
 
             var pointCount=Math.round(2*Math.PI*r);
             //循环算出每一个点的坐标 并将生成的点添加到body中（body可以是其他的容器 如div）
@@ -115,9 +115,8 @@ export default {
               this.message.vehicleInfo[3]=(this.message.vehicleInfo[3]+Math.cos(a)*r);   //根据圆心 半径 和三角函数计算x
               this.message.vehicleInfo[4]=(this.message.vehicleInfo[4]+Math.sin(a)*r);   //同计算x
               
-              this.message.vehicleInfo[5] =  Math.sqrt((Math.pow(Math.cos(a)*r, 2) + Math.pow(Math.sin(a)*r, 2))) / 0.0002;
+              this.message.vehicleInfo[5] =  Math.sqrt((Math.pow(Math.cos(a)*r, 2) + Math.pow(Math.sin(a)*r, 2))) / 0.002;
             };
-
          };
     },
 
