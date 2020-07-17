@@ -68,8 +68,10 @@ export default {
       message:{
         "baseState":[1.000000,40.800000,0.4],
         "vehicleInfo":[1.000000,"002",0.000000,120.199000,30.281000,40.000000,20.000000,0.500000],
-        "errorInfo":[1.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000]
-      }
+        "errorInfo":[1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,1.000000]
+      },
+     /*  topic: "testProject/clientSub/baseState",                 //发布主题
+      qtt: null  */
     }
   },
   
@@ -79,12 +81,43 @@ export default {
       console.log("nisdcs",this.CarState) */
         /* console.log("1111",this.CarState) */
         if(val){
-            /* console.log("65443",this.message.vehicleInfo[3]); */
-             /* console.log("13213",typeof(this.message.vehicleInfo[3])); */
-             this.message.vehicleInfo[3] = 120.199000 + Math.random() * 0.0005;
-             this.message.vehicleInfo[4] = 30.281000 + Math.random() * 0.0005;
-             this.message.vehicleInfo[5] = 40.000000 + Math.random() * 10;
+             /* this.message.vehicleInfo[3] = 120.199000 + Math.random() * 0.005;
+             this.message.vehicleInfo[4] = 30.281000 + Math.random() * 0.005;
+             this.message.vehicleInfo[5] = 40.000000 + Math.random() * 10; */
+
             /*  console.log("1111",this.CarState) */
+           /*  if(this.message.vehicleInfo[3] >= 128){
+               this.message.vehicleInfo[3] = 120.199000;
+            }
+            this.message.vehicleInfo[3] = this.message.vehicleInfo[3] + Math.random() * 0.005;
+            
+            if(this.message.vehicleInfo[4] >= 38){
+               this.message.vehicleInfo[4] = 30.281000;
+            }
+            this.message.vehicleInfo[4] = this.message.vehicleInfo[4] + Math.random() * 0.005;
+          
+            if(this.message.vehicleInfo[5] >= 30){
+               this.message.vehicleInfo[5] = 40.000000;
+            }
+            this.message.vehicleInfo[5] = this.message.vehicleInfo[5] + Math.random() * 10;
+ */
+           /*  let r = 10; 
+
+            this.message.vehicleInfo[3] = this.message.vehicleInfo[3] + Math.random() ;   
+            this.message.vehicleInfo[4] = this.message.vehicleInfo[4] + Math.random(); 
+            this.message.vehicleInfo[5] =   */
+            var r = 40;
+
+            var pointCount=Math.round(2*Math.PI*r);
+            //循环算出每一个点的坐标 并将生成的点添加到body中（body可以是其他的容器 如div）
+            for (var i=0; i<=pointCount; i++){
+              var a=(i*2*Math.PI)/(pointCount);
+              this.message.vehicleInfo[3]=(this.message.vehicleInfo[3]+Math.cos(a)*r);   //根据圆心 半径 和三角函数计算x
+              this.message.vehicleInfo[4]=(this.message.vehicleInfo[4]+Math.sin(a)*r);   //同计算x
+              
+              this.message.vehicleInfo[5] =  Math.sqrt((Math.pow(Math.cos(a)*r, 2) + Math.pow(Math.sin(a)*r, 2))) / 0.0002;
+            };
+
          };
     },
 
@@ -92,21 +125,27 @@ export default {
          /*  console.log(this.Controller)
           console.log("bub", val) */
          if(val){
-              this.message.errorInfo[-1] = 1.000000;
+              this.message.errorInfo[-1] = 0;
              /*  console.log(this.message) */
-         };
+         }else{
+           this.message.errorInfo[-1] = 1;
+         }
     },
 
     Lidar(val){
         if(val){
-            this.message.errorInfo[2] = 0.000000;
-        };
+            this.message.errorInfo[2] = 0;
+        }else{
+          this.message.errorInfo[2] = 1;
+        }
     },
 
     wave_radar(val){
        /*  console.log(val) */
         if(val){
-            this.message.errorInfo[3] = 1.000000;
+            this.message.errorInfo[3] = 0;
+        }else{
+          this.message.errorInfo[3] = 1;
         }
     }
   },
@@ -117,24 +156,20 @@ export default {
     }
   }, */
 
-  /* computed:{
-      message(){
-          if(this.CarState == "移动");{
-              message.vehicleInfo[3] = Math.random(1,1000);
-              message.vehicleInfo[4] = Math.random(1,1000);
-              message.vehicleInfo[5] = Math.random(1,1000);
-          }
-          if(this.Controller == "打开"){
-              message.errorInfo[-1] = 1.000000;
-          }
-          if(this.Lidar == "打开"){
-             message.errorInfo[2] = 0.000000;
-          }
-          if(this.wave_radar == "正常"){
-             message.errorInfo[3] = 1.000000;
-          }
-      }
-  }, */
+    methods:{
+        Send(){
+            var topic = "testProject/clientSub/baseState";                 //发布主题
+            var qtt = JSON.stringify(this.message); 
+
+            this.client.publish(topic, qtt,  { qos: 0, retain: false }, function(err){
+              if(err == undefined){
+                console.log("Publish finished");
+              }else{
+                console.log("publish failed");
+              }
+            });
+        }
+    },
 
   mounted(){
       this.userName = this.$root.Login_username;
@@ -143,7 +178,7 @@ export default {
          connectTimeout: 40000,
          clientId: "mqtitId-_client",
          clean: true,
-         keepAliveInterval: 100,
+         keepAliveInterval: 5000,
        };
 
       this.client = mqtt.connect("wss://www.sunnyiov.com/mqtt", options);
@@ -151,23 +186,29 @@ export default {
       this.client.on("connect", e => {
         console.log("连接成功");
         
-        var topic = "testProject/clientSub/baseState";                 //发布主题
-        var qtt = JSON.stringify(this.message); 
-
+       /*  var topic = "testProject/clientSub/baseState";                 //发布主题
+        var qtt = JSON.stringify(this.message);  */
 
        /*  var pu = this.client.publish(topic, qtt,  { qos: 0, retain: false });
         console.log("nu", pu); */
 
-        setInterval(this.client.publish(topic, qtt,  { qos: 0, retain: false }, function(err){
-          if(err == undefined){
-            console.log("Publish finished");
-          }else{
-            console.log("publish failed");
-          }
-        }), 2000);      //定时  
-      }); 
+      //   setInterval(this.client.publish(topic, qtt,  { qos: 0, retain: false }, function(err){
+      //     if(err == undefined){
+      //       console.log("Publish finished");
+      //     }else{
+      //       console.log("publish failed");
+      //     }
+      //   }), 2000);           //定时  
+      // }); 
       
-      
+      /*  setInterval(this.client.publish(topic, qtt,  { qos: 0, retain: false },
+        ), 2000);           //定时  
+       });  */
+
+     /*  setInterval(this.client.publish(topic, qtt,  { qos: 0, retain: false }), 2000);           //定时  */ 
+
+        setInterval(this.Send(), 5000);           //定时 
+       }); 
 
       this.client.on("reconnect", error => {
         console.log("正在重连：", error);
