@@ -9,6 +9,18 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  provide(){
+    return{
+      Login_username: this.Login_username,
+      Login_password: this.Login_password
+    }
+  },
+  data(){
+    return{
+      Login_username: "pang",
+      Login_password: 123456
+    }
+  },
   router,
   components: { App },
   template: '<App/>'
