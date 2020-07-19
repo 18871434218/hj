@@ -58,10 +58,10 @@ export default {
   data () {
     return {
       userName: "",
-      CarState: "停止",     //设置车状态
-      Controller: "关闭",   //控制器
-      Lidar: "关闭",        // 激光雷达
-      wave_radar: "故障",   //毫米波雷达
+      CarState: false,     //设置车状态
+      Controller: false,   //控制器
+      Lidar: false,        // 激光雷达
+      wave_radar: false,   //毫米波雷达
 
       client: null,     
 
